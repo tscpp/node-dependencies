@@ -3,7 +3,7 @@
 	"displayName": "Node Dependencies",
 	"description": "Tree view of all node dependencies in workspace",
 	"version": "0.0.1",
-	"publisher": "vscode-samples",
+	"publisher": "tscpp",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
