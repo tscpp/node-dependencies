@@ -1,0 +1,154 @@
+{
+	"name": "node-dependencies",
+	"displayName": "Node Dependencies",
+	"description": "Tree view of all node dependencies in workspace",
+	"version": "0.0.1",
+	"publisher": "vscode-samples",
+	"engines": {
+		"vscode": "^1.46.0"
+	},
+	"categories": [],
+	"activationEvents": [
+		"onView:nodeDependencies"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"viewsWelcome": [
+			{
+				"view": "nodeDependencies",
+				"contents": "No dependencies found, [learn more](https://www.npmjs.com/).\n[Initialize Project](command:nodeDependencies.init)\n[Add Dependency](command:nodeDependencies.addEntry)"
+			}
+		],
+		"views": {
+			"explorer": [
+				{
+					"id": "nodeDependencies",
+					"name": "Node Dependencies"
+				}
+			]
+		},
+		"commands": [
+			{
+				"command": "nodeDependencies.refreshEntry",
+				"title": "Refresh",
+				"icon": "$(refresh)"
+			},
+			{
+				"command": "nodeDependencies.init",
+				"title": "Initialize Project"
+			},
+			{
+				"command": "nodeDependencies.addEntry",
+				"title": "Add",
+				"icon": "$(add)"
+			},
+			{
+				"command": "nodeDependencies.addDevEntry",
+				"title": "Add Dev Dependency"
+			},
+			{
+				"command": "nodeDependencies.editEntry",
+				"title": "Edit"
+			},
+			{
+				"command": "nodeDependencies.deleteEntry",
+				"title": "Delete",
+				"icon": "$(close)"
+			},
+			{
+				"command": "nodeDependencies.npmopen",
+				"title": "Open in NPM",
+				"icon": "$(link)"
+			}
+		],
+		"menus": {
+			"view/title": [
+				{
+					"command": "nodeDependencies.refreshEntry",
+					"group": "navigation"
+				},
+				{
+					"command": "nodeDependencies.addEntry",
+					"group": "navigation"
+				},
+				{
+					"command": "nodeDependencies.addDevEntry"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "nodeDependencies.deleteEntry",
+					"group": "dep@2"
+				},
+				{
+					"command": "nodeDependencies.editEntry",
+					"group": "dep@1"
+				},
+				{
+					"command": "nodeDependencies.deleteEntry",
+					"group": "inline@2"
+				},
+				{
+					"command": "nodeDependencies.npmopen",
+					"group": "inline@1"
+				}
+			],
+			"commandPalette": [
+				{
+					"command": "nodeDependencies.refreshEntry",
+					"when": "false"
+				},
+				{
+					"command": "nodeDependencies.init",
+					"when": "false"
+				},
+				{
+					"command": "nodeDependencies.addEntry",
+					"when": "false"
+				},
+				{
+					"command": "nodeDependencies.addDevEntry",
+					"when": "false"
+				},
+				{
+					"command": "nodeDependencies.editEntry",
+					"when": "false"
+				},
+				{
+					"command": "nodeDependencies.deleteEntry",
+					"when": "false"
+				},
+				{
+					"command": "nodeDependencies.npmopen",
+					"when": "false"
+				}
+			]
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"lint": "eslint . --ext .ts,.tsx"
+	},
+	"devDependencies": {
+		"@types/mkdirp": "^0.5.2",
+		"@types/node": "^12.12.0",
+		"@types/rimraf": "^2.0.2",
+		"@types/vscode": "^1.45.0",
+		"typescript": "^3.9.4",
+		"@typescript-eslint/eslint-plugin": "^3.0.2",
+		"@typescript-eslint/parser": "^3.0.2",
+		"eslint": "^7.1.0"
+	},
+	"dependencies": {
+		"jsonc-parser": "^0.4.2",
+		"minimist": "^0.2.1",
+		"mkdirp": "^0.5.1",
+		"rimraf": "^2.6.2"
+	},
+	"repository": {
+		"url": "https://github.com/tscpp/node-dependencies",
+		"type": "https"
+	}
+}
