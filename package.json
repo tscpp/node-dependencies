@@ -17,7 +17,7 @@
 		"viewsWelcome": [
 			{
 				"view": "nodeDependencies",
-				"contents": "No dependencies found, [learn more](https://www.npmjs.com/).\n[Initialize Project](command:nodeDependencies.init)\n[Add Dependency](command:nodeDependencies.addEntry)"
+				"contents": "No dependencies found, [learn more](https://www.npmjs.com/about).\n[Add Dependency](command:nodeDependencies.addDependency)"
 			}
 		],
 		"views": {
@@ -30,7 +30,7 @@
 		},
 		"commands": [
 			{
-				"command": "nodeDependencies.refreshEntry",
+				"command": "nodeDependencies.refreshDependency",
 				"title": "Refresh",
 				"icon": "$(refresh)"
 			},
@@ -39,20 +39,20 @@
 				"title": "Initialize Project"
 			},
 			{
-				"command": "nodeDependencies.addEntry",
+				"command": "nodeDependencies.addDependency",
 				"title": "Add",
 				"icon": "$(add)"
 			},
 			{
-				"command": "nodeDependencies.addDevEntry",
+				"command": "nodeDependencies.addDevDependency",
 				"title": "Add Dev Dependency"
 			},
 			{
-				"command": "nodeDependencies.editEntry",
+				"command": "nodeDependencies.editDependency",
 				"title": "Edit"
 			},
 			{
-				"command": "nodeDependencies.deleteEntry",
+				"command": "nodeDependencies.deleteDependency",
 				"title": "Delete",
 				"icon": "$(close)"
 			},
@@ -60,46 +60,54 @@
 				"command": "nodeDependencies.npmopen",
 				"title": "Open in NPM",
 				"icon": "$(link)"
+			},
+			{
+				"command": "nodeDependencies.updateDependency",
+				"title": "Update"
 			}
 		],
 		"menus": {
 			"view/title": [
 				{
-					"command": "nodeDependencies.refreshEntry",
+					"command": "nodeDependencies.refreshDependency",
 					"when": "view == nodeDependencies",
 					"group": "navigation"
 				},
 				{
-					"command": "nodeDependencies.addEntry",
+					"command": "nodeDependencies.addDependency",
 					"when": "view == nodeDependencies",
 					"group": "navigation"
 				},
 				{
-					"command": "nodeDependencies.addDevEntry",
+					"command": "nodeDependencies.addDevDependency",
 					"when": "view == nodeDependencies"
 				}
 			],
 			"view/item/context": [
 				{
-					"command": "nodeDependencies.deleteEntry",
+					"command": "nodeDependencies.deleteDependency",
+					"group": "dep@3"
+				},
+				{
+					"command": "nodeDependencies.editDependency",
 					"group": "dep@2"
 				},
 				{
-					"command": "nodeDependencies.editEntry",
-					"group": "dep@1"
-				},
-				{
-					"command": "nodeDependencies.deleteEntry",
+					"command": "nodeDependencies.deleteDependency",
 					"group": "inline@2"
 				},
 				{
 					"command": "nodeDependencies.npmopen",
 					"group": "inline@1"
+				},
+				{
+					"command": "nodeDependencies.updateDependency",
+					"group": "dep@1"
 				}
 			],
 			"commandPalette": [
 				{
-					"command": "nodeDependencies.refreshEntry",
+					"command": "nodeDependencies.refreshDependency",
 					"when": "false"
 				},
 				{
@@ -107,23 +115,27 @@
 					"when": "false"
 				},
 				{
-					"command": "nodeDependencies.addEntry",
+					"command": "nodeDependencies.addDependency",
 					"when": "false"
 				},
 				{
-					"command": "nodeDependencies.addDevEntry",
+					"command": "nodeDependencies.addDevDependency",
 					"when": "false"
 				},
 				{
-					"command": "nodeDependencies.editEntry",
+					"command": "nodeDependencies.editDependency",
 					"when": "false"
 				},
 				{
-					"command": "nodeDependencies.deleteEntry",
+					"command": "nodeDependencies.deleteDependency",
 					"when": "false"
 				},
 				{
 					"command": "nodeDependencies.npmopen",
+					"when": "false"
+				},
+				{
+					"command": "nodeDependencies.updateDependency",
 					"when": "false"
 				}
 			]
