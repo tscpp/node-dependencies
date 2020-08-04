@@ -4,7 +4,7 @@
 	"description": "Tree view of all node dependencies in workspace",
 	"version": "0.0.2",
 	"publisher": "tscpp",
-	"icon": "./icon.png",
+	"icon": "icon.png",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
