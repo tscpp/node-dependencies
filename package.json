@@ -2,7 +2,7 @@
 	"name": "node-dependencies",
 	"displayName": "Node Dependencies",
 	"description": "Tree view of all node dependencies in workspace",
-	"version": "0.0.3",
+	"version": "0.1.0",
 	"publisher": "tscpp",
 	"icon": "icon.png",
 	"engines": {
@@ -40,7 +40,7 @@
 			},
 			{
 				"command": "nodeDependencies.addDependency",
-				"title": "Add",
+				"title": "Add Dependency",
 				"icon": "$(add)"
 			},
 			{
@@ -86,23 +86,43 @@
 			"view/item/context": [
 				{
 					"command": "nodeDependencies.deleteDependency",
-					"group": "dep@3"
+					"group": "dep@3",
+					"when": "view == nodeDependencies && viewItem == dependency"
 				},
 				{
 					"command": "nodeDependencies.editDependency",
-					"group": "dep@2"
+					"group": "dep@2",
+					"when": "view == nodeDependencies && viewItem == dependency"
 				},
 				{
 					"command": "nodeDependencies.deleteDependency",
-					"group": "inline@2"
+					"group": "inline@2",
+					"when": "view == nodeDependencies && viewItem == dependency"
 				},
 				{
 					"command": "nodeDependencies.npmopen",
-					"group": "inline@1"
+					"group": "inline@1",
+					"when": "view == nodeDependencies && viewItem == dependency"
 				},
 				{
 					"command": "nodeDependencies.updateDependency",
-					"group": "dep@1"
+					"group": "dep@1",
+					"when": "view == nodeDependencies && viewItem == dependency"
+				},
+				{
+					"command": "nodeDependencies.addDependency",
+					"when": "view == nodeDependencies && viewItem == workspace",
+					"group": "inline"
+				},
+				{
+					"command": "nodeDependencies.addDependency",
+					"when": "view == nodeDependencies && viewItem == workspace",
+					"group": "workspace@1"
+				},
+				{
+					"command": "nodeDependencies.addDevDependency",
+					"when": "view == nodeDependencies && viewItem == workspace",
+					"group": "workspace@2"
 				}
 			],
 			"commandPalette": [
@@ -148,14 +168,15 @@
 		"lint": "eslint . --ext .ts,.tsx"
 	},
 	"devDependencies": {
-		"@types/node": "^12.12.0",
 		"@types/vscode": "^1.45.0",
 		"@typescript-eslint/eslint-plugin": "^3.0.2",
 		"@typescript-eslint/parser": "^3.0.2",
-		"eslint": "^7.1.0",
+		"eslint": "^7.6.0",
 		"typescript": "^3.9.4"
 	},
-	"dependencies": {},
+	"dependencies": {
+		"@types/node": "^14.0.27"
+	},
 	"repository": {
 		"url": "https://github.com/tscpp/node-dependencies",
 		"type": "https"

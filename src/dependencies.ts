@@ -1,23 +1,11 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
+import utils from './utils';
+import console from './console';
 
-export class DepNodeProvider implements vscode.TreeDataProvider<Dependency | WorkspaceItem> {
-
-	private _onDidChangeTreeData: vscode.EventEmitter<Dependency | undefined | void> = new vscode.EventEmitter<Dependency | undefined | void>();
-	readonly onDidChangeTreeData: vscode.Event<Dependency | undefined | void> = this._onDidChangeTreeData.event;
-
-	private workspacePaths = this.workspaces.map(workspace => workspace.uri.path.replace(/\/[a-zA-Z]:\//, '/'));
-
-	constructor(private workspaces: readonly vscode.WorkspaceFolder[]) {
-		for (const workspace of this.workspacePaths) {
-			const packageJsonPath = path.join(workspace, 'package.json');
-			if (packageJsonPath)
-				fs.watchFile(packageJsonPath, () => this.refresh());
-		}
-	}
-
-	customDependencyStatuses: Record<string, Record<string, { status: string, dev?: boolean } | undefined>> = {};
+export class Dependencies {
+	private customDependencyStatuses: Record<string, Record<string, { status: string, dev?: boolean } | undefined>> = {};
 
 	public setStatus(workspacePath: string, moduleName: string, status: string, dev?: boolean) {
 		if (!this.customDependencyStatuses[workspacePath]) this.customDependencyStatuses[workspacePath] = {};
@@ -29,6 +17,19 @@ export class DepNodeProvider implements vscode.TreeDataProvider<Dependency | Wor
 		if (!this.customDependencyStatuses[workspacePath][moduleName]) return;
 		this.customDependencyStatuses[workspacePath][moduleName] = undefined;
 	}
+}
+
+export class DependencyTreeProvider implements vscode.TreeDataProvider<Dependency | WorkspaceItem> {
+	private _onDidChangeTreeData: vscode.EventEmitter<Dependency | undefined | void> = new vscode.EventEmitter<Dependency | undefined | void>();
+	readonly onDidChangeTreeData: vscode.Event<Dependency | undefined | void> = this._onDidChangeTreeData.event;
+
+	constructor(private dependencies: Dependencies) {
+		for (const workspace of utils.workspaces) {
+			const packageJsonPath = path.join(workspace, 'package.json');
+			if (packageJsonPath)
+				fs.watchFile(packageJsonPath, () => this.refresh());
+		}
+	}
 
 	async refresh(cache = false) {
 		if (!cache)
@@ -36,15 +37,18 @@ export class DepNodeProvider implements vscode.TreeDataProvider<Dependency | Wor
 		this._onDidChangeTreeData.fire();
 	}
 
-	getTreeItem(element: vscode.TreeItem): vscode.TreeItem {
+	public getTreeItem(element: vscode.TreeItem): vscode.TreeItem {
 		return element;
 	}
 
-	getChildren(element?: Dependency | WorkspaceItem): Thenable<Dependency[] | WorkspaceItem[]> {
-		if (!element && this.workspacePaths.length > 1)
-			return Promise.resolve(this.workspacePaths.map(workspacePath => new WorkspaceItem(workspacePath)));
+	public getChildren(element?: Dependency | WorkspaceItem): Thenable<Dependency[] | WorkspaceItem[]> {
+		if (!element && utils.workspaces.length > 1)
+			return Promise.resolve(utils.workspaces.map(workspacePath => new WorkspaceItem(workspacePath)));
 
-		const workspace = (element instanceof WorkspaceItem ? element : element?.workspace) ?? new WorkspaceItem(this.workspacePaths[0]);
+		const workspace = (element instanceof WorkspaceItem ? element : element?.workspace);
+
+		if (!workspace) return Promise.resolve([]);
+
 		let packageJsonPath: string;
 		let root = false;
 
@@ -96,11 +100,10 @@ export class DepNodeProvider implements vscode.TreeDataProvider<Dependency | Wor
 	private getDepsInPackageJson(workspace: WorkspaceItem, packageJsonPath: string, root: boolean): Dependency[] {
 		if (this.pathExists(packageJsonPath)) {
 			const packageJson = this.getPackageJSON(packageJsonPath, workspace);
-			const customDependencyStatuses = this.customDependencyStatuses[workspace.path] ?? {};
+			const customDependencyStatuses = this.dependencies['customDependencyStatuses'][workspace.path] ?? {};
 
 			const toDep = (moduleName: string, version: string, dev: boolean): Dependency => {
 				const customStatus = customDependencyStatuses[moduleName];
-				const status = customStatus?.status ?? version;
 				dev = customStatus?.dev ? customStatus?.dev : dev;
 
 				if (customStatus)
@@ -116,9 +119,9 @@ export class DepNodeProvider implements vscode.TreeDataProvider<Dependency | Wor
 					if (!dependencies.length || dependencies.length === 0)
 						collapsible = vscode.TreeItemCollapsibleState.None;
 
-					return new Dependency(moduleName, status, collapsible, dev, workspace);
+					return new Dependency(moduleName, collapsible, dev, workspace, version, customStatus?.status);
 				} else {
-					return new Dependency(moduleName, status, vscode.TreeItemCollapsibleState.None, dev, workspace);
+					return new Dependency(moduleName, vscode.TreeItemCollapsibleState.None, dev, workspace, version, customStatus?.status);
 				}
 			};
 
@@ -131,7 +134,7 @@ export class DepNodeProvider implements vscode.TreeDataProvider<Dependency | Wor
 				if (Object.prototype.hasOwnProperty.call(customDependencyStatuses, moduleName)) {
 					const status = customDependencyStatuses[moduleName];
 					if (!status) continue;
-					customs.push(new Dependency(moduleName, status.status, vscode.TreeItemCollapsibleState.None, status.dev ?? false, workspace));
+					customs.push(new Dependency(moduleName, vscode.TreeItemCollapsibleState.None, status.dev ?? false, workspace, undefined, status.status));
 				}
 
 			return deps.concat(devDeps, customs).sort((a, b) => {
@@ -156,57 +159,63 @@ export class DepNodeProvider implements vscode.TreeDataProvider<Dependency | Wor
 }
 
 export class WorkspaceItem extends vscode.TreeItem {
-	public readonly name: string;
-
 	constructor(public readonly path: string) {
-		super(WorkspaceItem.relative(path), vscode.TreeItemCollapsibleState.Collapsed);
-		this.name = WorkspaceItem.relative(path);
+		super('', vscode.TreeItemCollapsibleState.Collapsed);
 	}
 
-	private static workspaces = vscode.workspace.workspaceFolders?.map(workspace => workspace.uri.path.replace(/\/[a-zA-Z]:\//, '/')) ?? [];
-
-	private static relative(mainPath: string) {
-		const paths = this.workspaces.filter(path => path !== mainPath);
-
-		let result = mainPath;
-
-		if (paths.length === 0) return path.parse(mainPath).base;
-
-		for (const _path of paths) {
-			if (_path === mainPath) continue;
-			result = path.relative(_path, result);
-		}
-
-		return result;
+	get name() {
+		return this._getName();
 	}
+
+	get label() {
+		return this._getName();
+	}
+
+	set label(v: any) {
+		return;
+	}
+
+	private _getName() {
+		return path.parse(this.path).base.replace(new RegExp('\\' + path.sep, 'g'), '/');
+	}
+
+	contextValue = 'workspace';
 }
 
 export class Dependency extends vscode.TreeItem {
 	constructor(
 		public readonly name: string,
-		private version: string,
 		public readonly collapsibleState: vscode.TreeItemCollapsibleState,
 		public readonly dev: boolean,
-		public readonly workspace: WorkspaceItem
+		public readonly workspace: WorkspaceItem,
+		public version?: string,
+		public status?: string
 	) {
 		super(name, collapsibleState);
 	}
 
 	get tooltip(): string {
-		return `${this.name} ${this.version}`;
+		return `${this.name} ${this.status ?? this.version}`;
 	}
 
 	get description(): string {
-		const versions: { prefix: string, version: string }[] = [];
+		if (this.status)
+			return this.status;
 
-		for (const versionRaw of this.version.split('||').map(v => v.trim())) {
-			versions.push({
-				prefix: versionRaw.startsWith('^') || versionRaw.startsWith('~') ? versionRaw.slice(0, 1) : '',
-				version: versionRaw.startsWith('^') || versionRaw.startsWith('~') ? versionRaw.slice(1) : versionRaw
-			});
+		if (this.version) {
+			const versions: { prefix: string, version: string }[] = [];
+
+			for (const versionRaw of this.version.split('||').map(v => v.trim())) {
+				versions.push({
+					prefix: versionRaw.startsWith('^') || versionRaw.startsWith('~') ? versionRaw.slice(0, 1) : '',
+					version: versionRaw.startsWith('^') || versionRaw.startsWith('~') ? versionRaw.slice(1) : versionRaw
+				});
+			}
+
+			return versions.map(version => `${version.prefix === '~' ? '~' : ''}${version.version}`).join(', ');
+		} else {
+			return 'unknown';
 		}
-
-		return versions.map(version => `${version.prefix === '~' ? '~' : ''}${version.version}`).join(', ');
 	}
 
 	iconPath = new vscode.ThemeIcon(this.dev ? 'tools' : 'package');

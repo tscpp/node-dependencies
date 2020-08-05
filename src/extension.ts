@@ -1,106 +1,143 @@
 import * as vscode from 'vscode';
-import { DepNodeProvider, Dependency } from './nodeDependencies';
+import { Dependencies, Dependency, DependencyTreeProvider, WorkspaceItem } from './dependencies';
 import * as childProcess from 'child_process';
 import * as path from 'path';
 import * as fs from 'fs';
+import utils from './utils';
+import console, { Console } from './console';
+import { Writable } from 'stream';
 
 export function activate(context: vscode.ExtensionContext) {
-	const treeDataProvider = new DepNodeProvider(vscode.workspace.workspaceFolders ?? []);
+	const output = vscode.window.createOutputChannel('Node Dependencies');
+	Console.output = output;
+
+	const dependencies = new Dependencies();
+	const treeDataProvider = new DependencyTreeProvider(dependencies);
+
 	vscode.window.createTreeView('nodeDependencies', { treeDataProvider, showCollapseAll: true, canSelectMany: false });
 	vscode.commands.registerCommand('nodeDependencies.refreshDependency', () => treeDataProvider.refresh());
-	vscode.commands.registerCommand('nodeDependencies.npmopen', (node: Dependency) => vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(`https://www.npmjs.com/package/${node.name}`)));
-	vscode.commands.registerCommand('nodeDependencies.addDependency', () => ask_install(false));
-	vscode.commands.registerCommand('nodeDependencies.addDevDependency', () => ask_install(true));
-	vscode.commands.registerCommand('nodeDependencies.editDependency', (node: Dependency) => ask_install(undefined, node.name + '@'));
+	vscode.commands.registerCommand('nodeDependencies.npmopen', (node: Dependency) => opennpm(node.name, node.version));
+	vscode.commands.registerCommand('nodeDependencies.addDependency', async (node: WorkspaceItem | undefined) => addDependency(node?.path, false));
+	vscode.commands.registerCommand('nodeDependencies.addDevDependency', async (node: WorkspaceItem | undefined) => addDependency(node?.path, true));
+	vscode.commands.registerCommand('nodeDependencies.editDependency', (node: Dependency) => editVersion(node));
 	vscode.commands.registerCommand('nodeDependencies.deleteDependency', (node: Dependency) => remove(node));
-	vscode.commands.registerCommand('nodeDependencies.updateDependency', (node: Dependency) => install(node.workspace.path, [node.name + '@latest'], 'updating...', node.dev));
+	vscode.commands.registerCommand('nodeDependencies.updateDependency', (node: Dependency) => editVersion(node, 'latest'));
 	vscode.commands.registerCommand('nodeDependencies.init', () => init());
 
-	async function init() {
-		const workspacePaths = vscode.workspace.workspaceFolders?.map(folder => folder.uri.path).map(path => path.replace(/\/[a-zA-Z]:\//, '/')) ?? [];
+	function opennpm(_package: string, version?: string) {
+		let url = `https://www.npmjs.com/package/${_package}`;
 
-		let workspace: string | undefined;
+		if (version) {
+			const match = /([0-9]+\.[0-9]+\.[0-9]+)/.exec(version);
 
-		if (workspacePaths.length === 1)
-			workspace = workspacePaths[0];
-		else
-			workspace = (await vscode.window.showWorkspaceFolderPick())?.uri.path.replace(/\/[a-zA-Z]:\//, '/');
+			const _version = match && typeof match[0] === 'string' ? match[0] : undefined;
 
-		if (!workspace) return;
+			if (_version)
+				url += `/v/${_version}`;
+		}
 
-		const cwd = workspace;
+		vscode.commands.executeCommand('vscode.open', vscode.Uri.parse(url));
+	}
 
-		if (fs.existsSync(path.join(workspace, 'package.json')))
-			return vscode.window.showInformationMessage('The project is already initialized.');
+	async function executeCommand(command: string, options?: childProcess.ExecOptions & { pipe?: boolean | Writable }): Promise<void> {
+		return new Promise<void>((resolve, reject) => {
+			const subprocess = childProcess.exec(command, options);
 
-		const child = childProcess.exec(`npm init -y`, { cwd });
+			subprocess.on('error', reject);
+			subprocess.on('exit', code => {
+				if (code !== 0)
+					reject(code);
 
-		child.on('error', err => { throw err; });
-		child.on('exit', code => {
-			if (code !== 0)
-				vscode.window.showErrorMessage(`Initialization of project failed.`);
+				treeDataProvider.refresh();
+				resolve();
+			});
 
-			treeDataProvider.refresh();
-			vscode.workspace.openTextDocument(path.join(cwd, 'package.json'));
+			if (options?.pipe !== false) {
+				const pipe = options?.pipe instanceof Writable ? options.pipe : console.pipe;
+
+				subprocess.stdout?.pipe(pipe);
+				subprocess.stderr?.pipe(pipe);
+			}
 		});
 	}
 
-	async function ask_install(dev?: boolean, prefix?: string) {
-		const workspacePaths = vscode.workspace.workspaceFolders?.map(folder => folder.uri.path).map(path => path.replace(/\/[a-zA-Z]:\//, '/')) ?? [];
-
-		let workspace: string | undefined;
-
-		if (workspacePaths.length === 1)
-			workspace = workspacePaths[0];
-		else
-			workspace = (await vscode.window.showWorkspaceFolderPick({ placeHolder: 'Workspace to install the dependency in' }))?.uri.path.replace(/\/[a-zA-Z]:\//, '/');
-
-		if (!workspace) return;
-
-		if (!fs.existsSync(path.join(workspace, 'package.json')))
-			await init();
-
-		const moduleNames = (await vscode.window.showInputBox({ value: prefix, valueSelection: [999, 999] }))?.split(' ');
-
-		if (!moduleNames) return;
-
-		install(workspace, moduleNames, 'installing...', dev);
+	async function addDependency(workspace: string | undefined, dev: boolean) {
+		workspace = workspace ?? await getWorkspace();
+		if (!workspace) return void vscode.window.showWarningMessage('No workspace or folder open');
+		const deps = await getModuleNames(true);
+		if (!(deps && deps.length)) return;
+		install(workspace, undefined, deps);
 	}
 
-	function install(workspace: string, moduleNames: string[], status: string, dev?: boolean) {
-		for (const moduleName of moduleNames) {
-			treeDataProvider.setStatus(workspace, moduleName.replace(/@.+$/, '').trim(), status, dev);
+	async function getWorkspace() {
+		let workspace: string;
+
+		if (!utils.workspaces.length) return;
+
+		if (utils.workspaces.length === 1)
+			workspace = utils.workspaces[0];
+		else {
+			const _workspace = (await vscode.window.showWorkspaceFolderPick())?.uri.path.replace(/\/[a-zA-Z]:\//, '/');
+
+			if (!_workspace) return;
+
+			workspace = _workspace;
 		}
 
-		treeDataProvider.refresh();
+		return workspace;
+	}
 
-		for (const moduleName of moduleNames) {
-			const child = childProcess.exec(`npm install ${moduleName}${typeof dev === 'boolean' ? dev ? ' --save-dev' : ' --save' : ''}`, { cwd: workspace });
+	async function editVersion(dependency: Dependency, _version?: string) {
+		const version = _version ?? await vscode.window.showInputBox({ placeHolder: 'Version, e.g. 1.2.3' });
+		install(dependency.workspace.path, 'updating...', { dev: dependency.dev, name: `${dependency.name}@${version}` });
+	}
 
-			child.on('error', err => { throw err; });
-			child.on('exit', code => {
-				if (code !== 0)
-					vscode.window.showErrorMessage(`Installation of module ${moduleName} did not finish successfully.`);
+	async function init(_workspace?: string, force = false) {
+		const workspace = _workspace ?? await getWorkspace();
+		if (!workspace) return;
 
-				treeDataProvider.removeStatus(workspace, moduleName);
-				treeDataProvider.refresh();
-			});
+		if (!force && fs.existsSync(path.join(workspace, 'package.json')))
+			return;
+
+		await executeCommand('npm init -y', { cwd: workspace }).catch(() => vscode.window.showErrorMessage(`Initialization of project failed.`));
+	}
+
+	async function getModuleNames(dev: boolean, value?: string) {
+		return (await vscode.window.showInputBox({ value, valueSelection: [999, 999] }))?.split(' ').map(name => ({ name, dev }));
+	}
+
+	async function install(_workspace?: string, _status?: string, ..._deps: ({ name: string, dev: boolean } | { name: string, dev: boolean }[])[]) {
+		if (_deps.flat().length === 0) return;
+
+		const workspace = _workspace ?? await getWorkspace();
+		if (!workspace) return;
+
+		const deps = _deps.flat();
+		const status = _status ?? 'installing...';
+
+		for (const dep of deps) {
+			dependencies.setStatus(workspace, dep.name.replace(/@.+$/, '').trim(), status, dep.dev);
+		}
+
+		treeDataProvider.refresh(true);
+
+		for (const module of deps) {
+			await executeCommand(`npm install ${module.name}${typeof module.dev === 'boolean' ? module.dev ? ' --save-dev' : ' --save' : ''}`, { cwd: workspace })
+				.catch(() => vscode.window.showErrorMessage(`Installation of module ${module.name} did not finish successfully.`));
+
+			dependencies.removeStatus(workspace, module.name);
+			treeDataProvider.refresh();
 		}
 	}
 
 	async function remove(dependency: Dependency) {
-		const child = childProcess.exec(`npm remove ${dependency.name}`, { cwd: dependency.workspace.path });
+		dependencies.setStatus(dependency.workspace.path, dependency.name, 'removing...');
+		treeDataProvider.refresh(true);
 
-		treeDataProvider.setStatus(dependency.workspace.path, dependency.name, 'removing...');
+		await executeCommand(`npm remove ${dependency.name}`, { cwd: dependency.workspace.path })
+			.catch(() => vscode.window.showErrorMessage(`Uninstallation of module ${dependency.name} did not finish successfully.`));
+
+		dependencies.removeStatus(dependency.workspace.path, dependency.name);
 		treeDataProvider.refresh();
-
-		child.on('error', err => { throw err; });
-		child.on('exit', code => {
-			if (code !== 0)
-				vscode.window.showErrorMessage(`Uninstallation of module ${dependency.name} did not finish successfully.`);
-
-			treeDataProvider.removeStatus(dependency.workspace.path, dependency.name);
-			treeDataProvider.refresh();
-		});
 	}
 }
