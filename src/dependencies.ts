@@ -45,7 +45,7 @@ export class DependencyTreeProvider implements vscode.TreeDataProvider<Dependenc
 		if (!element && utils.workspaces.length > 1)
 			return Promise.resolve(utils.workspaces.map(workspacePath => new WorkspaceItem(workspacePath)));
 
-		const workspace = (element instanceof WorkspaceItem ? element : element?.workspace);
+		const workspace = (element instanceof WorkspaceItem ? element : element?.workspace) ?? utils.workspaces.length ? new WorkspaceItem(utils.workspaces[0]) : undefined;
 
 		if (!workspace) return Promise.resolve([]);
 
