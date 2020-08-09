@@ -64,7 +64,7 @@ export function activate(context: vscode.ExtensionContext) {
 	async function addDependency(workspace: string | undefined, dev: boolean) {
 		workspace = workspace ?? await getWorkspace();
 		if (!workspace) return void vscode.window.showWarningMessage('No workspace or folder open');
-		const deps = await getModuleNames(true);
+		const deps = await getModuleNames(dev);
 		if (!(deps && deps.length)) return;
 		install(workspace, undefined, deps);
 	}
@@ -120,7 +120,8 @@ export function activate(context: vscode.ExtensionContext) {
 		const status = _status ?? 'installing...';
 
 		for (const dep of deps) {
-			dependencies.setStatus(workspace, getModuleName(dep.name), status, dep.dev);
+			const moduleName = getModuleName(dep.name);
+			dependencies.setStatus(workspace, moduleName, status, dep.dev);
 		}
 
 		treeDataProvider.refresh(true);
