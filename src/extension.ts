@@ -106,6 +106,10 @@ export function activate(context: vscode.ExtensionContext) {
 		return (await vscode.window.showInputBox({ value, valueSelection: [999, 999] }))?.split(' ').map(name => ({ name, dev }));
 	}
 
+	function getModuleName(_package: string): string {
+		return _package.replace(/@[^/]+$/, '').trim();
+	}
+
 	async function install(_workspace?: string, _status?: string, ..._deps: ({ name: string, dev: boolean } | { name: string, dev: boolean }[])[]) {
 		if (_deps.flat().length === 0) return;
 
@@ -116,16 +120,16 @@ export function activate(context: vscode.ExtensionContext) {
 		const status = _status ?? 'installing...';
 
 		for (const dep of deps) {
-			dependencies.setStatus(workspace, dep.name.replace(/@.+$/, '').trim(), status, dep.dev);
+			dependencies.setStatus(workspace, getModuleName(dep.name), status, dep.dev);
 		}
 
 		treeDataProvider.refresh(true);
 
-		for (const module of deps) {
-			await executeCommand(`npm install ${module.name}${typeof module.dev === 'boolean' ? module.dev ? ' --save-dev' : ' --save' : ''}`, { cwd: workspace })
-				.catch(() => vscode.window.showErrorMessage(`Installation of module ${module.name} did not finish successfully.`));
+		for (const dep of deps) {
+			await executeCommand(`npm install ${dep.name}${typeof dep.dev === 'boolean' ? dep.dev ? ' --save-dev' : ' --save' : ''}`, { cwd: workspace })
+				.catch(() => vscode.window.showErrorMessage(`Installation of module ${dep.name} did not finish successfully.`));
 
-			dependencies.removeStatus(workspace, module.name);
+			dependencies.removeStatus(workspace, getModuleName(dep.name));
 			treeDataProvider.refresh();
 		}
 	}

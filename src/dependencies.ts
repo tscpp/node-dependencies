@@ -116,7 +116,7 @@ export class DependencyTreeProvider implements vscode.TreeDataProvider<Dependenc
 
 					let collapsible = vscode.TreeItemCollapsibleState.Collapsed;
 
-					if (!dependencies.length || dependencies.length === 0)
+					if (!dependencies.length || dependencies.length <= 1)
 						collapsible = vscode.TreeItemCollapsibleState.None;
 
 					return new Dependency(moduleName, collapsible, dev, workspace, version, customStatus?.status);
@@ -195,7 +195,7 @@ export class Dependency extends vscode.TreeItem {
 	}
 
 	get tooltip(): string {
-		return `${this.name} ${this.status ?? this.version}`;
+		return `${this.name}${this.version ? ` ${this.version}` : ''}`;
 	}
 
 	get description(): string {
