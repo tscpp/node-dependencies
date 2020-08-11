@@ -16,12 +16,12 @@ export function activate(context: vscode.ExtensionContext) {
 
 	vscode.window.createTreeView('nodeDependencies', { treeDataProvider, showCollapseAll: true, canSelectMany: false });
 	vscode.commands.registerCommand('nodeDependencies.refreshDependency', () => treeDataProvider.refresh());
-	vscode.commands.registerCommand('nodeDependencies.npmopen', (node: Dependency) => opennpm(node.name, node.version));
+	vscode.commands.registerCommand('nodeDependencies.npmopen', (node: Dependency) => opennpm(node.name, node.versions.length ? node.versions[0] : undefined));
 	vscode.commands.registerCommand('nodeDependencies.addDependency', async (node: WorkspaceItem | undefined) => addDependency(node?.path, false));
 	vscode.commands.registerCommand('nodeDependencies.addDevDependency', async (node: WorkspaceItem | undefined) => addDependency(node?.path, true));
-	vscode.commands.registerCommand('nodeDependencies.editDependency', (node: Dependency) => editVersion(node));
+	vscode.commands.registerCommand('nodeDependencies.editDependency', (node: Dependency) => edit(node, true));
 	vscode.commands.registerCommand('nodeDependencies.deleteDependency', (node: Dependency) => remove(node));
-	vscode.commands.registerCommand('nodeDependencies.updateDependency', (node: Dependency) => editVersion(node, 'latest'));
+	vscode.commands.registerCommand('nodeDependencies.updateDependency', (node: Dependency) => edit(node, false, 'latest'));
 	vscode.commands.registerCommand('nodeDependencies.init', () => init());
 
 	function opennpm(_package: string, version?: string) {
@@ -87,9 +87,12 @@ export function activate(context: vscode.ExtensionContext) {
 		return workspace;
 	}
 
-	async function editVersion(dependency: Dependency, _version?: string) {
-		const version = _version ?? await vscode.window.showInputBox({ placeHolder: 'Version, e.g. 1.2.3' });
-		install(dependency.workspace.path, 'updating...', { dev: dependency.dev, name: `${dependency.name}@${version}` });
+	async function edit(dependency: Dependency, pickdev: boolean, _version?: string) {
+		const version = _version ?? (await vscode.window.showInputBox({ placeHolder: `Version, e.g. 1.2.3${dependency.versions.length ? `, defaults to ${dependency.versions[0]}` : ''}. Press escape to dismiss.` }) || dependency.versions[0]);
+		if (!version) return void vscode.window.showInformationMessage(`Could not find or get version of dependency ${dependency.name}`);
+		const devPick = pickdev ? await vscode.window.showQuickPick([ 'dependency', 'dev dependency' ], { placeHolder: `Choose type of dependency. Will default to ${dependency.dev ? 'dev dependency' : 'dependency'}. Press escape to dismiss.` }) : undefined;
+		const dev = devPick && devPick === 'dev dependency' ? true : dependency.dev;
+		install(dependency.workspace.path, 'updating...', { dev, name: `${dependency.name}@${version}` });
 	}
 
 	async function init(_workspace?: string, force = false) {
@@ -103,7 +106,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	async function getModuleNames(dev: boolean, value?: string) {
-		return (await vscode.window.showInputBox({ value, valueSelection: [999, 999] }))?.split(' ').map(name => ({ name, dev }));
+		return (await vscode.window.showInputBox({ value, valueSelection: [999, 999], placeHolder: 'package @packages/package version@1.2.3', prompt: 'Enter package name(s) space separated with or without version.' }))?.split(' ').map(name => ({ name, dev }));
 	}
 
 	function getModuleName(_package: string): string {

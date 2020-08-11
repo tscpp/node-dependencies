@@ -8,6 +8,20 @@
 
 _Screenshot from version 0.1.5. Made with [Gifski](https://gif.ski/)._
 
-<a href="https://marketplace.visualstudio.com/items?itemName=tscpp.node-dependencies"><img width="32" src="assets/vsc-32.png" alt="VSCode Marketplace"></a><img src="assets/margin.png" width="32"><a href="https://github.com/tscpp/node-dependencies"><img width="32" src="assets/gh-32.png" alt="GitHub"></a>
+<br>
+
+<!-- Use this character for positioning the menu below -->
+<!-- | -->
+
+<img src="assets/margin.png" width="16"> <!-- Margin -->
+<a href="CONTRIBUTING.md">Contributing</a>
+<img src="assets/margin.png" width="16"> <!-- Margin -->
+<a href="docs/docs.md">Docs</a>
+<img src="assets/margin.png" width="16"> <!-- Margin -->
+<a href="https://marketplace.visualstudio.com/items?itemName=tscpp.node-dependencies">VS Code Marketplace</a>
+<img src="assets/margin.png" width="16"> <!-- Margin -->
+<a href="CHANGELOG.md">Change Log</a>
+<img src="assets/margin.png" width="16"> <!-- Margin -->
+<a href="https://github.com/tscpp/node-dependencies">GitHub</a>
 
 </div>

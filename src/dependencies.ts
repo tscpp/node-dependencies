@@ -188,8 +188,8 @@ export class Dependency extends vscode.TreeItem {
 		public readonly collapsibleState: vscode.TreeItemCollapsibleState,
 		public readonly dev: boolean,
 		public readonly workspace: WorkspaceItem,
-		public version?: string,
-		public status?: string
+		private version?: string,
+		private status?: string
 	) {
 		super(name, collapsibleState);
 	}
@@ -203,20 +203,16 @@ export class Dependency extends vscode.TreeItem {
 			return this.status;
 
 		if (this.version) {
-			const versions: { prefix: string, version: string }[] = [];
-
-			for (const versionRaw of this.version.split('||').map(v => v.trim())) {
-				versions.push({
-					prefix: versionRaw.startsWith('^') || versionRaw.startsWith('~') ? versionRaw.slice(0, 1) : '',
-					version: versionRaw.startsWith('^') || versionRaw.startsWith('~') ? versionRaw.slice(1) : versionRaw
-				});
-			}
-
-			return versions.map(version => `${version.prefix === '~' ? '~' : ''}${version.version}`).join(', ');
+			return this.versions.join(', ');
 		} else {
 			return 'unknown';
 		}
 	}
+
+	versions = this.version ? this.version.split('||').map(v => v.trim()).map(versionRaw => ({
+		prefix: versionRaw.startsWith('^') || versionRaw.startsWith('~') ? versionRaw.slice(0, 1) : '',
+		version: versionRaw.startsWith('^') || versionRaw.startsWith('~') ? versionRaw.slice(1) : versionRaw
+	})).map(version => `${version.prefix === '~' ? '~' : ''}${version.version}`) : [];
 
 	iconPath = new vscode.ThemeIcon(this.dev ? 'tools' : 'package');
 
