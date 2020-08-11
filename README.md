@@ -24,6 +24,7 @@ _Screenshot from version 0.1.5. Made with [Gifski](https://gif.ski/)._
 <img src="assets/margin.png" width="16"> <!-- Margin -->
 <a href="https://github.com/tscpp/node-dependencies">GitHub</a>
 
+<br>
 
 <a href="https://www.buymeacoffee.com/9mGksEq28" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-yellow.png" alt="Buy Me A Coffee" height="25"></a>
 
