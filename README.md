@@ -4,7 +4,7 @@
 
 **Tree view of all dependencies installed in workspace.**
 
-<img src="assets/screenshot-0.1.5.gif">
+![](assets/screenshot-0.1.5.gif)
 
 _Screenshot from version 0.1.5. Made with [Gifski](https://gif.ski/)._
 
