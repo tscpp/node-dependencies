@@ -14,13 +14,13 @@ _Screenshot from version 0.1.5. Made with [Gifski](https://gif.ski/)._
 <!-- | -->
 
 <img src="assets/margin.png" width="16"> <!-- Margin -->
-<a href="CONTRIBUTING.md">Contributing</a>
+<a href="https://github.com/tscpp/node-dependencies/blob/0.2.0/CONTRIBUTING.md">Contributing</a>
 <img src="assets/margin.png" width="16"> <!-- Margin -->
-<a href="docs/docs.md">Docs</a>
+<a href="https://github.com/tscpp/node-dependencies/blob/0.2.0/docs/docs.md">Docs</a>
 <img src="assets/margin.png" width="16"> <!-- Margin -->
 <a href="https://marketplace.visualstudio.com/items?itemName=tscpp.node-dependencies">VS Code Marketplace</a>
 <img src="assets/margin.png" width="16"> <!-- Margin -->
-<a href="CHANGELOG.md">Change Log</a>
+<a href="https://github.com/tscpp/node-dependencies/blob/0.2.0/CHANGELOG.md">Change Log</a>
 <img src="assets/margin.png" width="16"> <!-- Margin -->
 <a href="https://github.com/tscpp/node-dependencies">GitHub</a>
 
