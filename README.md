@@ -1,6 +1,6 @@
 <div align="center">
 
-# Node Dependencies
+# Node Dependencies <sup>beta</sup>
 
 **Tree view of all dependencies installed in workspace.**
 
