@@ -12,13 +12,13 @@
 _Screenshot from unpublished version. Made with [Gifski](https://gif.ski/)._
 
 ## Features
-Some basic features. See [docs](https://github.com/tscpp/node-dependencies/blob/0.2.0/docs/docs.md).
+Some basic features. See [docs](https://github.com/tscpp/node-dependencies/blob/0.3.0/docs/docs.md).
 
 - Viewing tree view of all dependencies.
 - Installing/deleting/modifying dependencies.
 
 ## Contributing
-Feel free to contribute. Read more at [CONTRIBUTING.md](https://github.com/tscpp/node-dependencies/blob/0.2.0/CONTRIBUTING.md).
+Feel free to contribute. Read more at [CONTRIBUTING.md](https://github.com/tscpp/node-dependencies/blob/0.3.0/CONTRIBUTING.md).
 
 ## License and versioning
 This repository uses [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html) and the [MIT License](https://choosealicense.com/licenses/mit).
