@@ -35,9 +35,7 @@ Use the secondary mouse button, a.k.a. right-click on a workspace item and choos
 ![](./assets/installing-dev-dependencies-in-workspace01.png)
 
 ## Editing dependencies
-Use the secondary mouse button, a.k.a. right-click on a dependency item and choose 'Edit,' then edit the package version or dismiss with `ESC` and choose dev- or dependency.
-
-![](./assets/editing-dependencies01.png)
+No spec available...
 
 ### Updating dependencies
 Use the secondary mouse button, a.k.a. right-click on a dependency item and choose 'Update' to update the package to the latest master version.
