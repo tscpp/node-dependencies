@@ -18,6 +18,7 @@ List of essential features. See [docs](https://github.com/tscpp/node-dependencie
 
 - Viewing tree view of all dependencies.
 - Installing/deleting/modifying dependencies.
+- Multiselection support.
 
 ## Contributing
 Feel free to contribute. Read more at [CONTRIBUTING.md](https://github.com/tscpp/node-dependencies/blob/master/CONTRIBUTING.md).
