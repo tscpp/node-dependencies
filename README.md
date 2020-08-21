@@ -1,5 +1,7 @@
 # Node Dependencies Beta
 
+<img src="./icons/icon3.png" height="55" align="right">
+
 **Tree view of all dependencies installed in workspace.**
 
 [![](https://vsmarketplacebadge.apphb.com/version-short/tscpp.node-dependencies.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=tscpp.node-dependencies)
