@@ -2,7 +2,6 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import utils from './utils';
-import console from './console';
 
 export class Dependencies {
 	private customDependencyStatuses: Record<string, Record<string, { status: string, dev?: boolean } | undefined>> = {};

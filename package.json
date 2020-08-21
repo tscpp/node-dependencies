@@ -2,7 +2,7 @@
 	"name": "node-dependencies",
 	"displayName": "Node Dependencies",
 	"description": "Tree view of all node dependencies in workspace",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"publisher": "tscpp",
 	"icon": "icons/icon3.png",
 	"engines": {
@@ -30,11 +30,6 @@
 		},
 		"commands": [
 			{
-				"command": "nodeDependencies.refreshDependency",
-				"title": "Refresh",
-				"icon": "$(refresh)"
-			},
-			{
 				"command": "nodeDependencies.init",
 				"title": "Initialize Project"
 			},
@@ -48,8 +43,12 @@
 				"title": "Add Dev Dependency"
 			},
 			{
-				"command": "nodeDependencies.editDependency",
-				"title": "Edit"
+				"command": "nodeDependencies.changeDependencyVersion",
+				"title": "Change Version"
+			},
+			{
+				"command": "nodeDependencies.changeDependencyType",
+				"title": "Change Type"
 			},
 			{
 				"command": "nodeDependencies.deleteDependency",
@@ -69,11 +68,6 @@
 		"menus": {
 			"view/title": [
 				{
-					"command": "nodeDependencies.refreshDependency",
-					"when": "view == nodeDependencies",
-					"group": "navigation"
-				},
-				{
 					"command": "nodeDependencies.addDependency",
 					"when": "view == nodeDependencies",
 					"group": "navigation"
@@ -86,12 +80,17 @@
 			"view/item/context": [
 				{
 					"command": "nodeDependencies.deleteDependency",
-					"group": "dep@3",
+					"group": "dep@4",
 					"when": "view == nodeDependencies && viewItem == dependency"
 				},
 				{
-					"command": "nodeDependencies.editDependency",
+					"command": "nodeDependencies.changeDependencyVersion",
 					"group": "dep@2",
+					"when": "view == nodeDependencies && viewItem == dependency"
+				},
+				{
+					"command": "nodeDependencies.changeDependencyType",
+					"group": "dep@3",
 					"when": "view == nodeDependencies && viewItem == dependency"
 				},
 				{
@@ -127,10 +126,6 @@
 			],
 			"commandPalette": [
 				{
-					"command": "nodeDependencies.refreshDependency",
-					"when": "false"
-				},
-				{
 					"command": "nodeDependencies.init",
 					"when": "false"
 				},
@@ -143,7 +138,11 @@
 					"when": "false"
 				},
 				{
-					"command": "nodeDependencies.editDependency",
+					"command": "nodeDependencies.changeDependencyVersion",
+					"when": "false"
+				},
+				{
+					"command": "nodeDependencies.changeDependencyType",
 					"when": "false"
 				},
 				{
@@ -159,7 +158,29 @@
 					"when": "false"
 				}
 			]
-		}
+		},
+		"keybindings": [
+			{
+				"command": "nodeDependencies.deleteDependency",
+				"key": "delete",
+				"when": "nodeDependencies:hasSelection"
+			},
+			{
+				"command": "nodeDependencies.changeDependencyVersion",
+				"key": "f2",
+				"when": "nodeDependencies:hasSingleSelection"
+			},
+			{
+				"command": "nodeDependencies.changeDependencyType",
+				"key": "alt+f2",
+				"when": "nodeDependencies:hasSingleSelection"
+			},
+			{
+				"command": "nodeDependencies.updateDependency",
+				"key": "ctrl+f5",
+				"when": "nodeDependencies:hasSelection"
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
