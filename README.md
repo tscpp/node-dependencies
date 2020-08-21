@@ -12,7 +12,7 @@
 _Screenshot from unpublished version. Made with [Gifski](https://gif.ski/)._
 
 ## Features
-List of essential features. See [docs](https://github.com/tscpp/node-dependencies/blob/0.3.1/docs/docs.md) for all listed features and instructions.
+List of essential features. See [docs](https://github.com/tscpp/node-dependencies/blob/0.3.2/docs/docs.md) for all listed features and instructions.
 
 - Viewing tree view of all dependencies.
 - Installing/deleting/modifying dependencies.
@@ -26,7 +26,7 @@ This repository uses [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.
 Copyright (c) 2020 [tscpp](https://github.com/tscpp)
 
 Permission is granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
+of this software and associated documentation files (the "software"), to deal
 in the software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and sell
 copies of the software, and to permit persons to whom the software is
@@ -42,3 +42,10 @@ authors or copyright holders be liable for any claim, damages or other
 liability, whether in an action of contract, tort or otherwise, arising from,
 out of or in connection with the software or the use or other dealings in the
 software.
+
+| Permissions    | Conditions                   | Limitations  |
+|----------------|------------------------------|--------------|
+| Commercial use | License and copyright notice | No liability |
+| Distribution   |                              | No warranty  |
+| Modification   |                              |              |
+| Private use    |                              |              |
