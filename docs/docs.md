@@ -34,7 +34,7 @@ Use the secondary mouse button, a.k.a. right-click on a workspace item and choos
 
 ![](./assets/installing-dev-dependencies-in-workspace01.png)
 
-## Modifying dependencies
+## Editing dependencies
 No spec available...
 
 ### Updating dependencies
