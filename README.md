@@ -12,7 +12,7 @@
 _Screenshot from unpublished version. Made with [Gifski](https://gif.ski/)._
 
 ## Features
-List of essential features. See [docs](https://github.com/tscpp/node-dependencies/blob/0.3.0/docs/docs.md) for all listed features and instructions.
+List of essential features. See [docs](https://github.com/tscpp/node-dependencies/blob/0.3.1/docs/docs.md) for all listed features and instructions.
 
 - Viewing tree view of all dependencies.
 - Installing/deleting/modifying dependencies.
