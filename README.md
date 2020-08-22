@@ -1,5 +1,7 @@
 # Node Dependencies Beta
 
+<img src="./icons/icon3.png" height="55" align="right">
+
 **Tree view of all dependencies installed in workspace.**
 
 [![](https://vsmarketplacebadge.apphb.com/version-short/tscpp.node-dependencies.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=tscpp.node-dependencies)
@@ -8,14 +10,22 @@
 [![](https://img.shields.io/badge/paypal-donate-blue?style=flat-square)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Q72MU4KDX6H6W&source=url)
 <!-- [![](https://img.shields.io/github/stars/tscpp/node-dependencies.svg?style=flat-square)](https://github.com/tscpp/node-dependencies/stargazers/) -->
 
+<div align="center">
+  
 ![](assets/screenshot.gif)<br>
 _Screenshot from unpublished version. Made with [Gifski](https://gif.ski/)._
+  
+</div>
 
 ## Features
 List of essential features. See [docs](https://github.com/tscpp/node-dependencies/blob/0.3.2/docs/docs.md) for all listed features and instructions.
 
-- Viewing tree view of all dependencies.
-- Installing/deleting/modifying dependencies.
+- **Viewing tree view of all dependencies.**
+  The extension features viewing the whole tree of all dev dependencies, dependencies, and the sub dependencies or children.
+- **Installing/deleting/modifying dependencies.**
+  The extension offers features like installing, deleting and modifying - changing version, changing dependency type, or updating dependency to latest master version.
+- **Multiselection support.**
+  When many dependencies are selected, you can delete, modify - updating dependency to latest master version, the items.
 
 ## Contributing
 Feel free to contribute. Read more at [CONTRIBUTING.md](https://github.com/tscpp/node-dependencies/blob/master/CONTRIBUTING.md).
