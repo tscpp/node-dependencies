@@ -163,22 +163,22 @@
 			{
 				"command": "nodeDependencies.deleteDependency",
 				"key": "delete",
-				"when": "nodeDependencies:hasSelection"
+				"when": "view == nodeDependencies && nodeDependencies:hasSelection"
 			},
 			{
 				"command": "nodeDependencies.changeDependencyVersion",
 				"key": "f2",
-				"when": "nodeDependencies:hasSingleSelection"
+				"when": "view == nodeDependencies && nodeDependencies:hasSingleSelection"
 			},
 			{
 				"command": "nodeDependencies.changeDependencyType",
 				"key": "alt+f2",
-				"when": "nodeDependencies:hasSingleSelection"
+				"when": "view == nodeDependencies && nodeDependencies:hasSingleSelection"
 			},
 			{
 				"command": "nodeDependencies.updateDependency",
 				"key": "ctrl+f5",
-				"when": "nodeDependencies:hasSelection"
+				"when": "view == nodeDependencies && nodeDependencies:hasSelection"
 			}
 		]
 	},
