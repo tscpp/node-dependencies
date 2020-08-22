@@ -10,8 +10,12 @@
 [![](https://img.shields.io/badge/paypal-donate-blue?style=flat-square)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=Q72MU4KDX6H6W&source=url)
 <!-- [![](https://img.shields.io/github/stars/tscpp/node-dependencies.svg?style=flat-square)](https://github.com/tscpp/node-dependencies/stargazers/) -->
 
+<div align="center">
+  
 ![](assets/screenshot.gif)<br>
 _Screenshot from unpublished version. Made with [Gifski](https://gif.ski/)._
+  
+</div>
 
 ## Features
 List of essential features. See [docs](https://github.com/tscpp/node-dependencies/blob/0.3.2/docs/docs.md) for all listed features and instructions.
