@@ -20,9 +20,12 @@ _Screenshot from unpublished version. Made with [Gifski](https://gif.ski/)._
 ## Features
 List of essential features. See [docs](https://github.com/tscpp/node-dependencies/blob/0.3.2/docs/docs.md) for all listed features and instructions.
 
-- Viewing tree view of all dependencies.
-- Installing/deleting/modifying dependencies.
-- Multiselection support.
+- **Viewing tree view of all dependencies.**
+  The extension features viewing the whole tree of all dev dependencies, dependencies, and the sub dependencies or children.
+- **Installing/deleting/modifying dependencies.**
+  The extension offers features like installing, deleting and modifying - changing version, changing dependency type, or updating dependency to latest master version.
+- **Multiselection support.**
+  When many dependencies are selected, you can delete, modify - updating dependency to latest master version, the items.
 
 ## Contributing
 Feel free to contribute. Read more at [CONTRIBUTING.md](https://github.com/tscpp/node-dependencies/blob/master/CONTRIBUTING.md).
