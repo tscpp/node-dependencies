@@ -33,7 +33,7 @@ Feel free to contribute. Read more at [CONTRIBUTING.md](https://github.com/tscpp
 <img src="./assets/line.png" width="100%" height="1" /><br><br>
 This repository uses [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html).
 
-Copyright (c) 2020 [tscpp](https://github.com/tscpp)
+Copyright (c) 2020 Elias Skogevall
 
 Permission is granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "software"), to deal
