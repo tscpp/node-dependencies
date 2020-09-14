@@ -28,9 +28,12 @@ export default class Commands {
 
 		for (const dep of deps) {
 			await this._executeCommand(`npm install ${dep.rawSep}${typeof dep.dev === 'boolean' ? dep.dev ? ' --save-dev' : ' --save' : ''}`, { cwd: workspace })
-				.catch(() => vscode.window.showErrorMessage(`Installation of module ${dep.rawSep} did not finish successfully.`));
+				.catch(() => {
+					vscode.window.showErrorMessage(`Installation of module ${dep.rawSep} did not finish successfully.`);
+				}).finally(() => {
+					this.dependencies.removeStatus(workspace, this._getModuleName(dep.rawSep));
+				});
 
-			this.dependencies.removeStatus(workspace, this._getModuleName(dep.rawSep));
 			this.treeDataProvider.refresh();
 		}
 	}
