@@ -11,7 +11,7 @@ Versions including changelog can be found [here](https://github.com/tscpp/node-d
 ## [1.1.0] - 2020-09-14
 - Added toggle config files visibility option to the view title menu.
 - Fixed issue that caused the workspaces to have the same dependencies - [#29](https://github.com/tscpp/node-dependencies/issues/29).
-- Fixed issue that caused init while using multiple workspaces to fail - 
+- Fixed issue that caused init while using multiple workspaces to fail - [#30](https://github.com/tscpp/node-dependencies/issues/30).
 
 ## [1.0.0] - 2020-09-14
 - Completed first milestone, <1.0.0 - before and 1.0.0.
