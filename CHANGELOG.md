@@ -45,7 +45,7 @@ Versions including changelog can be found [here](https://github.com/tscpp/node-d
 
 Changes before 0.1.5 was not registered...
 
-[Unreleased]: https://github.com/tscpp/node-dependencies/compare/1.0.0...master
+[Unreleased]: https://github.com/tscpp/node-dependencies/compare/1.1.0...master
 [0.1.5]: https://github.com/tscpp/node-dependencies/releases/tag/0.1.5
 [0.2.0]: https://github.com/tscpp/node-dependencies/releases/tag/0.2.0
 [0.3.0]: https://github.com/tscpp/node-dependencies/releases/tag/0.3.0
