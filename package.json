@@ -2,7 +2,7 @@
 	"name": "node-dependencies",
 	"displayName": "Node Dependencies",
 	"description": "Tree view of all node dependencies in workspace",
-	"version": "0.3.4",
+	"version": "1.0.0",
 	"publisher": "tscpp",
 	"icon": "icons/icon3.png",
 	"engines": {

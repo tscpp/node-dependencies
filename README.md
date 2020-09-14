@@ -18,7 +18,7 @@ _Screenshot from unpublished version. Made with [Gifski](https://gif.ski/)._
 </div>
 
 ## Features
-List of essential features. See [docs](https://github.com/tscpp/node-dependencies/blob/0.3.2/docs/docs.md) for all listed features and instructions.
+List of essential features. See [docs](https://github.com/tscpp/node-dependencies/blob/1.0.0/docs/docs.md) for all listed features and instructions.
 
 - **Viewing tree view of all dependencies.**
   The extension features viewing the whole tree of all dev dependencies, dependencies, and the sub dependencies or children.
@@ -31,6 +31,7 @@ List of essential features. See [docs](https://github.com/tscpp/node-dependencie
 Feel free to contribute. Read more at [CONTRIBUTING.md](https://github.com/tscpp/node-dependencies/blob/master/CONTRIBUTING.md).
 
 <img src="./assets/line.png" width="100%" height="1" /><br><br>
+
 This repository uses [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html).
 
 Copyright (c) 2020 Elias Skogevall
