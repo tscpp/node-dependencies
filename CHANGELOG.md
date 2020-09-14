@@ -8,12 +8,17 @@ Versions including changelog can be found [here](https://github.com/tscpp/node-d
 
 ## [Unreleased]
 
+## [1.1.0] - 2020-09-14
+- Added toggle config files visibility option to the view title menu.
+- Fixed issue that caused the workspaces to have the same dependencies - [#29](https://github.com/tscpp/node-dependencies/issues/29).
+- Fixed issue that caused init while using multiple workspaces to fail - 
+
 ## [1.0.0] - 2020-09-14
-- Completed first milestone, <1.0.0 - before and 1.0.0
-- Fixed the issue that caused the installation indicator to not disappear on failure - [#23](https://github.com/tscpp/node-dependencies/issues/23)
+- Completed first milestone, <1.0.0 - before and 1.0.0.
+- Fixed the issue that caused the installation indicator to not disappear on failure - [#23](https://github.com/tscpp/node-dependencies/issues/23).
 
 ## [0.3.3] - 2020-08-21
-- Temporary patch for [#22](https://github.com/tscpp/node-dependencies/issues/22)
+- Temporary patch for [#22](https://github.com/tscpp/node-dependencies/issues/22).
 
 ## [0.3.2] - 2020-08-21
 - Update CHANGELOG.md.
@@ -24,7 +29,7 @@ Versions including changelog can be found [here](https://github.com/tscpp/node-d
 
 ## [0.3.0] - 2020-08-21
 - Added 'change version' and 'change type' keybindings and options to the dependency item.
-- Fixed patch for "project init never run" #9
+- Fixed patch for "project init never run" [#9](https://github.com/tscpp/node-dependencies/issues/9).
 - Improved documentation and readme.
 
 ## [0.2.0] - 2020-08-11

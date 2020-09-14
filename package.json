@@ -2,7 +2,7 @@
 	"name": "node-dependencies",
 	"displayName": "Node Dependencies",
 	"description": "Tree view of all node dependencies in workspace",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"publisher": "tscpp",
 	"icon": "icons/icon3.png",
 	"engines": {
@@ -63,6 +63,14 @@
 			{
 				"command": "nodeDependencies.updateDependency",
 				"title": "Update"
+			},
+			{
+				"command": "nodeDependencies.hideConfigFiles",
+				"title": "Hide Config Files"
+			},
+			{
+				"command": "nodeDependencies.showConfigFiles",
+				"title": "Show Config Files"
 			}
 		],
 		"menus": {
@@ -75,6 +83,14 @@
 				{
 					"command": "nodeDependencies.addDevDependency",
 					"when": "view == nodeDependencies"
+				},
+				{
+					"command": "nodeDependencies.hideConfigFiles",
+					"when": "view == nodeDependencies && nodeDependencies:configFilesVisible"
+				},
+				{
+					"command": "nodeDependencies.showConfigFiles",
+					"when": "view == nodeDependencies && !nodeDependencies:configFilesVisible"
 				}
 			],
 			"view/item/context": [
@@ -155,6 +171,14 @@
 				},
 				{
 					"command": "nodeDependencies.updateDependency",
+					"when": "false"
+				},
+				{
+					"command": "nodeDependencies.hideConfigFiles",
+					"when": "false"
+				},
+				{
+					"command": "nodeDependencies.showConfigFiles",
 					"when": "false"
 				}
 			]

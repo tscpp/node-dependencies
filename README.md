@@ -18,7 +18,7 @@ _Screenshot from unpublished version. Made with [Gifski](https://gif.ski/)._
 </div>
 
 ## Features
-List of essential features. See [docs](https://github.com/tscpp/node-dependencies/blob/1.0.0/docs/docs.md) for all listed features and instructions.
+List of essential features. See [docs](https://github.com/tscpp/node-dependencies/blob/1.1.0/docs/docs.md) for all listed features and instructions.
 
 - **Viewing tree view of all dependencies.**
   The extension features viewing the whole tree of all dev dependencies, dependencies, and the sub dependencies or children.

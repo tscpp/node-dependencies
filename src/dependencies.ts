@@ -44,7 +44,7 @@ export class DependencyTreeProvider implements vscode.TreeDataProvider<Dependenc
 		if (!element && utils.workspaces.length > 1)
 			return Promise.resolve(utils.workspaces.map(workspacePath => new WorkspaceItem(workspacePath)));
 
-		const workspace = (element instanceof WorkspaceItem ? element : element?.workspace) ?? utils.workspaces.length ? new WorkspaceItem(utils.workspaces[0]) : undefined;
+		const workspace = (element instanceof WorkspaceItem ? element : element?.workspace) ?? (utils.workspaces.length ? new WorkspaceItem(utils.workspaces[0]) : undefined);
 
 		if (!workspace) return Promise.resolve([]);
 
@@ -162,9 +162,7 @@ export class WorkspaceItem extends vscode.TreeItem {
 		super('', vscode.TreeItemCollapsibleState.Collapsed);
 	}
 
-	get name() {
-		return this._getName();
-	}
+	name = this._getName();
 
 	get label() {
 		return this._getName();
@@ -191,22 +189,24 @@ export class Dependency extends vscode.TreeItem {
 		private status?: string
 	) {
 		super(name, collapsibleState);
+
+		Object.defineProperty(this, 'description', {
+			get: () => {
+				if (this.status)
+					return this.status;
+
+				if (this.version) {
+					return this.versions.join(', ');
+				} else {
+					return 'unknown';
+				}
+			}
+		})
 	}
 
-	get tooltip(): string {
-		return `${this.name}${this.version ? ` ${this.version}` : ''}`;
-	}
+	tooltip = `${this.name}${this.version ? ` ${this.version}` : ''}`;
 
-	get description(): string {
-		if (this.status)
-			return this.status;
-
-		if (this.version) {
-			return this.versions.join(', ');
-		} else {
-			return 'unknown';
-		}
-	}
+	public description: string = '';
 
 	versions = this.version ? this.version.split('||').map(v => v.trim()).map(versionRaw => ({
 		prefix: versionRaw.startsWith('^') || versionRaw.startsWith('~') ? versionRaw.slice(0, 1) : '',

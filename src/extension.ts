@@ -19,6 +19,15 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.commands.registerCommand('nodeDependencies.changeDependencyType', (...args: Parameters<Commands['changeDependencyType']>) => commands.changeDependencyType(...args));
 	vscode.commands.registerCommand('nodeDependencies.deleteDependency', (...args: Parameters<Commands['remove']>) => commands.remove(...args));
 	vscode.commands.registerCommand('nodeDependencies.updateDependency', (...args: Parameters<Commands['update']>) => commands.update(...args));
+	vscode.commands.registerCommand('nodeDependencies.hideConfigFiles', () => {
+		vscode.commands.executeCommand('setContext', 'nodeDependencies:configFilesVisible', false);
+		commands.hideConfigFiles();
+	});
+	vscode.commands.registerCommand('nodeDependencies.showConfigFiles', () => {
+		vscode.commands.executeCommand('setContext', 'nodeDependencies:configFilesVisible', true);
+		commands.showConfigFiles();
+	});
+	vscode.commands.executeCommand('setContext', 'nodeDependencies:configFilesVisible', true);
 	vscode.commands.executeCommand('setContext', 'nodeDependencies:hasSelection', false);
 	vscode.commands.executeCommand('setContext', 'nodeDependencies:hasSingleSelection', false);
 	treeView.onDidChangeSelection(() => vscode.commands.executeCommand('setContext', 'nodeDependencies:hasSelection', Boolean(treeView.selection)));

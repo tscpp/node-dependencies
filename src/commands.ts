@@ -14,8 +14,8 @@ function isDependency(node: any): node is Dependency {
 export default class Commands {
 	constructor(private dependencies: Dependencies, private treeDataProvider: DependencyTreeProvider, private treeView: vscode.TreeView<Dependency | WorkspaceItem>) { }
 
-	private async _install(workspace: string, status: string, ..._deps: ({ rawSep: string, dev: boolean } | { rawSep: string, dev: boolean }[])[]) {
-		await this._initAutofill(workspace);
+	private async _install(workspacePath: string, status: string, ..._deps: ({ rawSep: string, dev: boolean } | { rawSep: string, dev: boolean }[])[]) {
+		await this._initAutofill(workspacePath);
 
 		const deps = _deps.flat();
 
@@ -23,15 +23,15 @@ export default class Commands {
 
 		for (const dep of deps) {
 			const moduleName = this._getModuleName(dep.rawSep);
-			this.dependencies.setStatus(workspace, moduleName, status, dep.dev);
+			this.dependencies.setStatus(workspacePath, moduleName, status, dep.dev);
 		}
 
 		for (const dep of deps) {
-			await this._executeCommand(`npm install ${dep.rawSep}${typeof dep.dev === 'boolean' ? dep.dev ? ' --save-dev' : ' --save' : ''}`, { cwd: workspace })
+			await this._executeCommand(`npm install ${dep.rawSep}${typeof dep.dev === 'boolean' ? dep.dev ? ' --save-dev' : ' --save' : ''}`, { cwd: workspacePath })
 				.catch(() => {
 					vscode.window.showErrorMessage(`Installation of module ${dep.rawSep} did not finish successfully.`);
 				}).finally(() => {
-					this.dependencies.removeStatus(workspace, this._getModuleName(dep.rawSep));
+					this.dependencies.removeStatus(workspacePath, this._getModuleName(dep.rawSep));
 				});
 
 			this.treeDataProvider.refresh();
@@ -67,7 +67,10 @@ export default class Commands {
 		this._install(node.workspace.path, 'Updating...', { dev: node.dev, rawSep: `${node.name}@${version}` });
 	}
 
-	opennpm(_package: string, version?: string) {
+	opennpm(dependency: Dependency) {
+		const _package = dependency.name;
+		const version = dependency.versions.length === 1 ? dependency.versions[0] : undefined;
+
 		let url = `https://www.npmjs.com/package/${_package}`;
 
 		if (version) {
@@ -105,7 +108,7 @@ export default class Commands {
 	}
 
 	async addDependency(_workspace?: WorkspaceItem) {
-		const workspace = _workspace?.name ?? await this._getWorkspace();
+		const workspace = _workspace?.path ?? await this._getWorkspace();
 		if (!workspace && !_workspace) return void vscode.window.showWarningMessage('No workspace or folder open');
 		const deps = await this._getModuleNames(false);
 		if (!(deps && deps.length)) return;
@@ -114,7 +117,7 @@ export default class Commands {
 	}
 
 	async addDevDependency(_workspace?: WorkspaceItem) {
-		const workspace = _workspace?.name ?? await this._getWorkspace();
+		const workspace = _workspace?.path ?? await this._getWorkspace();
 		if (!workspace && !_workspace) return void vscode.window.showWarningMessage('No workspace or folder open');
 		const deps = await this._getModuleNames(true);
 		if (!(deps && deps.length)) return;
@@ -140,12 +143,12 @@ export default class Commands {
 		return workspace;
 	}
 
-	private async _init(workspace: string) {
-		return void await this._executeCommand('npm init -y', { cwd: workspace }).catch(() => vscode.window.showErrorMessage(`Initialization of project failed.`));
+	private async _init(workspacePath: string) {
+		return void await this._executeCommand('npm init -y', { cwd: workspacePath }).catch(() => vscode.window.showErrorMessage(`Initialization of project failed.`));
 	}
 
-	private async _initAutofill(_workspace?: string, force = false) {
-		const workspace = _workspace ?? await this._getWorkspace();
+	private async _initAutofill(_workspacePath?: string, force = false) {
+		const workspace = _workspacePath ?? await this._getWorkspace();
 		if (!workspace) return;
 
 		if (!force && fs.existsSync(path.join(workspace, 'package.json')))
@@ -197,5 +200,26 @@ export default class Commands {
 
 		for (const dependency of dependencies)
 			this._install(dependency.workspace.path, 'Updating...', { dev: dependency.dev, rawSep: `${dependency.name}@latest` });
+	}
+
+	private _exclude(on: boolean) {
+		const config = vscode.workspace.getConfiguration('files');
+
+		const exclude = config.get<Record<string, boolean | { when: string }>>('exclude');
+
+		if (!exclude) return;
+
+		exclude['**/node_modules'] = on;
+		exclude['**/package-lock.json'] = on;
+		
+		config.update('exclude', exclude, vscode.ConfigurationTarget.Global);
+	}
+
+	public hideConfigFiles() {
+		this._exclude(true);
+	}
+
+	public showConfigFiles() {
+		this._exclude(false);
 	}
 }
