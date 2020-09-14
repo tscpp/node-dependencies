@@ -163,22 +163,22 @@
 			{
 				"command": "nodeDependencies.deleteDependency",
 				"key": "delete",
-				"when": "nodeDependencies:hasSelection"
+				"when": "view == nodeDependencies && nodeDependencies:hasSelection"
 			},
 			{
 				"command": "nodeDependencies.changeDependencyVersion",
 				"key": "f2",
-				"when": "nodeDependencies:hasSingleSelection"
+				"when": "view == nodeDependencies && nodeDependencies:hasSingleSelection"
 			},
 			{
 				"command": "nodeDependencies.changeDependencyType",
 				"key": "alt+f2",
-				"when": "nodeDependencies:hasSingleSelection"
+				"when": "view == nodeDependencies && nodeDependencies:hasSingleSelection"
 			},
 			{
 				"command": "nodeDependencies.updateDependency",
 				"key": "ctrl+f5",
-				"when": "nodeDependencies:hasSelection"
+				"when": "view == nodeDependencies && nodeDependencies:hasSelection"
 			}
 		]
 	},
@@ -190,8 +190,8 @@
 	},
 	"devDependencies": {
 		"@types/vscode": "^1.45.0",
-		"@typescript-eslint/eslint-plugin": "^3.0.2",
-		"@typescript-eslint/parser": "^3.0.2",
+		"@typescript-eslint/eslint-plugin": "^3.10.1",
+		"@typescript-eslint/parser": "^3.10.1",
 		"eslint": "^7.6.0",
 		"typescript": "^3.9.4"
 	},
