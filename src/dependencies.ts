@@ -28,6 +28,8 @@ export class DependencyTreeProvider implements vscode.TreeDataProvider<Dependenc
 			if (packageJsonPath)
 				fs.watchFile(packageJsonPath, () => this.refresh());
 		}
+
+		vscode.workspace.onDidChangeConfiguration(() => this.refresh())
 	}
 
 	async refresh(cache = false) {
