@@ -11,6 +11,14 @@ export function activate(context: vscode.ExtensionContext) {
 	const treeDataProvider = new DependencyTreeProvider(dependencies);
 	const treeView = vscode.window.createTreeView<Dependency | WorkspaceItem>('nodeDependencies', { treeDataProvider, showCollapseAll: true, canSelectMany: true });
 
+	const configFilesVisible = (() => {
+		const excludes = vscode.workspace.getConfiguration('files').inspect('exclude')?.globalValue as Record<string, boolean | { when: string }>
+		const node_modules = Boolean(Object.keys(excludes).find(key => key === '**/node_modules' && excludes[key] === true))
+		const package_lock = Boolean(Object.keys(excludes).find(key => key === '**/package-lock.json' && excludes[key] === true))
+		
+		return !(node_modules || package_lock)
+	})()
+
 	const commands = new Commands(dependencies, treeDataProvider, treeView);
 	vscode.commands.registerCommand('nodeDependencies.npmopen', (...args: Parameters<Commands['opennpm']>) => commands.opennpm(...args));
 	vscode.commands.registerCommand('nodeDependencies.addDependency', (...args: Parameters<Commands['addDependency']>) => commands.addDependency(...args));
@@ -27,7 +35,7 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.commands.executeCommand('setContext', 'nodeDependencies:configFilesVisible', true);
 		commands.showConfigFiles();
 	});
-	vscode.commands.executeCommand('setContext', 'nodeDependencies:configFilesVisible', true);
+	vscode.commands.executeCommand('setContext', 'nodeDependencies:configFilesVisible', configFilesVisible);
 	vscode.commands.executeCommand('setContext', 'nodeDependencies:hasSelection', false);
 	vscode.commands.executeCommand('setContext', 'nodeDependencies:hasSingleSelection', false);
 	treeView.onDidChangeSelection(() => vscode.commands.executeCommand('setContext', 'nodeDependencies:hasSelection', Boolean(treeView.selection)));
