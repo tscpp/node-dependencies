@@ -17,7 +17,7 @@ export default class Commands {
 	private async _install(workspacePath: string, status: string, ..._deps: ({ rawSep: string, dev: boolean } | { rawSep: string, dev: boolean }[])[]) {
 		await this._initAutofill(workspacePath);
 
-		const deps = _deps.flat();
+		const deps: { rawSep: string, dev: boolean }[] = _deps.flat();
 
 		if (deps.flat().length === 0) return;
 
@@ -26,16 +26,33 @@ export default class Commands {
 			this.dependencies.setStatus(workspacePath, moduleName, status, dep.dev);
 		}
 
-		for (const dep of deps) {
-			await this._executeCommand(`npm install ${dep.rawSep}${typeof dep.dev === 'boolean' ? dep.dev ? ' --save-dev' : ' --save' : ''}`, { cwd: workspacePath })
-				.catch(() => {
-					vscode.window.showErrorMessage(`Installation of module ${dep.rawSep} did not finish successfully.`);
-				}).finally(() => {
-					this.dependencies.removeStatus(workspacePath, this._getModuleName(dep.rawSep));
-				});
-
-			this.treeDataProvider.refresh();
+		const _catch = (err: any) => {
+			vscode.window.showErrorMessage(`Installation of modules ${savePackages.join(', ')} did not finish successfully.\n${err}`)
 		}
+
+		const _finally = (deps: { rawSep: string, dev: boolean }[]) => () => {
+			for (const dep of deps)
+				this.dependencies.removeStatus(workspacePath, this._getModuleName(dep.rawSep))
+		}
+
+		const saveDeps = deps.filter(dep => !dep.dev)
+		const savePackages = saveDeps.map(dep => dep.rawSep)
+		let saveInstallation: Promise<void> = Promise.resolve()
+		if (saveDeps.length > 0)
+			saveInstallation = this._executeCommand(`npm install ${savePackages.join(' ')} --save`, { cwd: workspacePath })
+				.catch(_catch)
+				.finally(_finally(saveDeps))
+
+		const devDeps = deps.filter(dep => dep.dev)
+		const devPackages = devDeps.map(dep => dep.rawSep)
+		let devInstallation: Promise<void> = Promise.resolve()
+		if (devDeps.length > 0)
+			devInstallation = this._executeCommand(`npm install ${devPackages.join(' ')} --save-dev`, { cwd: workspacePath })
+				.catch(_catch)
+				.finally(_finally(devDeps))
+
+		await saveInstallation.then(() => this.treeDataProvider.refresh())
+		await devInstallation.then(() => this.treeDataProvider.refresh())
 	}
 
 	async changeDependencyType(_node?: Dependency) {
@@ -50,7 +67,7 @@ export default class Commands {
 		const dev = devPick === 'dev dependency';
 
 		this.treeDataProvider.refresh(true);
-		
+
 		this._install(node.workspace.path, 'Updating...', { dev, rawSep: `${node.name}@${node.versions}` });
 	}
 
@@ -195,7 +212,7 @@ export default class Commands {
 
 	async update(_dependency?: Dependency) {
 		const dependencies = _dependency ? [_dependency] : this.treeView.selection.filter(isDependency);
-		
+
 		this.treeDataProvider.refresh(true);
 
 		for (const dependency of dependencies)
@@ -211,7 +228,7 @@ export default class Commands {
 
 		exclude['**/node_modules'] = on;
 		exclude['**/package-lock.json'] = on;
-		
+
 		config.update('exclude', exclude, vscode.ConfigurationTarget.Global);
 	}
 
