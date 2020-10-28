@@ -210,7 +210,7 @@
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
-		"lint": "eslint . --ext .ts,.tsx"
+		"lint": "eslint . --ext .ts"
 	},
 	"devDependencies": {
 		"@types/vscode": "^1.45.0",
