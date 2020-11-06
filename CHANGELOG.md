@@ -8,6 +8,10 @@ Versions including changelog can be found [here](https://github.com/tscpp/node-d
 
 ## [Unreleased]
 
+## [1.2.0] - 2020-11-06
+- Fixed CHANGELOG
+- Fixed build issues
+
 ## [1.1.0] - 2020-09-14
 - Added toggle config files visibility option to the view title menu.
 - Fixed issue that caused the workspaces to have the same dependencies - [#29](https://github.com/tscpp/node-dependencies/issues/29).
@@ -45,7 +49,7 @@ Versions including changelog can be found [here](https://github.com/tscpp/node-d
 
 Changes before 0.1.5 was not registered...
 
-[Unreleased]: https://github.com/tscpp/node-dependencies/compare/1.1.0...master
+[Unreleased]: https://github.com/tscpp/node-dependencies/compare/1.2.0...master
 [0.1.5]: https://github.com/tscpp/node-dependencies/releases/tag/0.1.5
 [0.2.0]: https://github.com/tscpp/node-dependencies/releases/tag/0.2.0
 [0.3.0]: https://github.com/tscpp/node-dependencies/releases/tag/0.3.0
@@ -53,3 +57,5 @@ Changes before 0.1.5 was not registered...
 [0.3.2]: https://github.com/tscpp/node-dependencies/releases/tag/0.3.2
 [0.3.3]: https://github.com/tscpp/node-dependencies/releases/tag/0.3.3
 [1.0.0]: https://github.com/tscpp/node-dependencies/releases/tag/1.0.0
+[1.1.0]: https://github.com/tscpp/node-dependencies/releases/tag/1.1.0
+[1.2.0]: https://github.com/tscpp/node-dependencies/releases/tag/1.2.0
