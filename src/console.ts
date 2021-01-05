@@ -12,7 +12,7 @@ export class Console {
 		defaultEncoding: 'utf-8',
 		write: (...args) => (function (this: Console, chunk: any, encoding: BufferEncoding, callback: (error?: Error | null | undefined) => void): void {
 			try {
-				this.write(new Buffer(chunk, encoding).toString());
+				this.write(Buffer.from(chunk, encoding).toString());
 			} catch (err) {
 				return callback(err);
 			} finally {
