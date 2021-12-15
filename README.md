@@ -1,4 +1,10 @@
-# Node Dependencies Beta
+# NOTICE
+
+**I have decided to temporarly remove Node Dependencies from the marketplace. The extension is outdated and should not be used. I have been working the new version for a while now and could be released next year (2022). The extension is removed due to high risk vulnerabilities in third party packages. I have prioritised other packages for now. Feel free to fork and release an working extension. Merry christmas!**
+
+---
+
+# Node Dependencies
 
 <img src="./icons/icon3.png" height="55" align="right">
 
